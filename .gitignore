@@ -10,4 +10,8 @@ karabiner/automatic_backups
 nvim.bak/
 yarn/
 raycast/
+zed/conversations
+zed/embeddings
+zed/themes
+zed/.*
 .DS_Store
