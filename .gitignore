@@ -1,0 +1,13 @@
+configstore/
+fish/
+fontforge/
+gatsby/
+gh/
+github-copilot/
+gitui/
+iterm2/
+karabiner/automatic_backups
+nvim.bak/
+yarn/
+raycast/
+.DS_Store

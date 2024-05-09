@@ -1,0 +1,8 @@
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-t": ["task::Rerun", { "reevaluate_context": true }]
+    }
+  }
+]
