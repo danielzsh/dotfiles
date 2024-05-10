@@ -1,7 +1,56 @@
 snippet cpac
 	#include <iostream>
+	#define int long long
 	using namespace std;
-	
-	int main() {
-		${0}
+
+	#define deb(...) logger(#__VA_ARGS__, __VA_ARGS__)
+	template<typename ...Args>
+	void logger(string vars, Args&&... values) {
+		    cout << vars << " = ";
+				    string delim = "";
+						    (..., (cout << delim << values, delim = ", "));
+	}
+
+	const int inf = 1e18;
+	const int N = ${0};
+
+	signed main() {
+		
+	}
+
+snippet egcd
+	// ---extended euclidean algorithm---
+	int gcd(int a, int b, int& x, int& y) {
+		x = 1, y = 0;
+		int x1 = 0, y1 = 1, a1 = a, b1 = b;
+		while (b1) {
+			int q = a1 / b1;
+			tie(x, x1) = make_tuple(x1, x - q * x1);
+			tie(y, y1) = make_tuple(y1, y - q * y1);
+			tie(a1, b1) = make_tuple(b1, a1 - q * b1);
+		}
+		return a1;
+	}
+	int gcd(int a, int b) { int x, y; return gcd(a, b, x, y); }
+
+	int inv(int a, int m) {
+		int x, y;
+		gcd(a, m, x, y);
+		return x % m;
+	}
+
+snippet phi
+	// ---euler's totient funtion---
+	int phi(int n) {
+			int result = n;
+			for (int i = 2; i * i <= n; i++) {
+					if (n % i == 0) {
+							while (n % i == 0)
+									n /= i;
+							result -= result / i;
+					}
+			}
+			if (n > 1)
+					result -= result / n;
+			return result;
 	}
