@@ -2,14 +2,19 @@ snippet cpac
 	#include <iostream>
 	#define int long long
 	using namespace std;
-
+	using P = pair<int, int>;
 	const int inf = 1e18;
 
 	const int N = ${0};
 
-	signed main() {
-		cin.tie(0)->sync_with_stdio(0);	
+	void ac() {
 
+	}
+
+	signed main() {
+		cin.tie(0)->sync_with_stdio(0); 
+		int t; cin >> t;
+		while (t--) ac();
 	}
 
 snippet egcd
@@ -60,3 +65,130 @@ snippet combo
 	int F[${0}], F_i[${1}];
 	void pre(int n) { F[0] = F_i[0] = 1; for (int i = 1; i < n; i++) F_i[i] = inv(F[i] = F[i - 1] * i % M); }
 	int C(int n, int k) { return F[n] * F_i[n - k] % M * F_i[k] % M; }
+
+snippet sieve
+	bool np[N];
+	void sieve() {
+		for (int i = 2; i < N; i++) if (!np[i]) {
+			for (int j = 2 * i; j < N; j += i) np[i] = true;
+		}
+	}
+
+snippet dinic
+	struct E {
+		int y, id, cap;
+	};
+	vector<E> g[N * N];
+	vector<E>::iterator e[N * N];
+
+	void add_edge(int x, int y, int cap) {
+		g[x].push_back({y, t++, cap});
+		g[y].push_back({x, t++, 0});
+	}
+
+	bool bfs(int s, int t) {
+		for (int i = 0; i <= t; i++) lv[i] = inf;
+		queue<int> q;
+		q.push(lv[s] = 0);
+		while (q.size()) {
+			int x = q.front(); q.pop();
+			if (x == t) return true;
+			for (auto [y, id, cap] : g[x]) if (cap > f[id] && lv[y] > lv[x] + 1) {
+				lv[y] = lv[x] + 1; q.push(y);
+			}
+		}
+		return false;
+	}
+
+	int dfs(int x, int fl, int t) {
+		if (x == t) return fl;
+		for (; e[x] != g[x].end(); e[x]++) {
+			auto [y, id, cap] = *e[x];
+			if (lv[y] != lv[x] + 1 || f[id] >= cap) continue; 
+			int nf = dfs(y, min(fl, cap - f[id]), t);
+			if (nf > 0) {
+				f[id] += nf, f[id^1] -= nf;
+				return nf;
+			}
+		}
+		return 0;
+	}
+
+	int dinic(int s, int t) {
+		int r = 0;
+		while (bfs(s, t)) {
+			for (int i = 0; i <= t; i++) e[i] = g[i].begin();
+			while (int x = dfs(s, inf, t)) {
+				r += x;
+			}
+		}
+		return r;
+	}
+
+snippet randomac
+	mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+snippet sparse
+	int st[N][K];
+	//---SPARSE TABLE---
+	void build() {
+		for (int i = 0; i < n; i++) st[i][0] = a[i];
+		for (int k = 1; k < K; k++) for (int i = 0; i < n; i++) {
+			st[i][k] = st[i][k - 1];
+			if (int j = i + (1 << k - 1); j < n) st[i][k] = min(st[i][k], st[j][k - 1]);
+		}
+	}
+
+	int mn(int l, int r) { // min on [l, r)
+		int k = log2(r - l);
+		return min(st[l][k], st[r - (1 << k)][k]);
+	}
+snippet matrix
+	template <int... D> struct T {
+		int v = 0;
+		void operator*= (int x) { v = v * x % M; }
+		void operator+= (int x) { v = ad(v, x); }
+		void operator-= (int x) { v = sb(v, x); }
+		void operator+= (T<> x) { *this += x.v; }
+		void operator-= (T<> x) { *this -= x.v; }
+		void operator= (int x) { v = x; }
+		string str() { return to_string(v); }
+	};
+	template <int N, int... D> struct T<N, D...> {
+		T<D...> a[N];
+		T<N, D...> operator* (int v) {
+			auto o = *this;
+			for (int i = 0; i < N; i++) o[i] *= v;
+			return o;
+		}
+		void operator*= (int v) { *this = *this * v; }
+		T<N, D...> operator+ (T<N, D...> b) {
+			auto o = *this;
+			for (int i = 0; i < N; i++) o[i] += b[i];
+			return o;
+		}
+		void operator+= (T<N, D...> b) { *this = *this + b; }
+		void operator-= (T<N, D...> b) {
+			for (int i = 0; i < N; i++) a[i] -= b[i];
+		}
+		T<D...>& operator[] (int i) { return a[i]; }
+		string str() {
+			string s = "";
+			for (int i = 0; i < N; i++) s += a[i].str() + (sizeof...(D) ? "\n" : " ");
+			return s;
+		}
+		void gauss(int n) {
+			for (int i = 0; i <= n; i++) {
+				if (!a[i][i].v) {
+					int r = i; 
+					for (int j = i + 1; j <= n; j++) if (a[j][i].v) r = j; 
+					assert(a[r][i].v);
+					swap(a[i], a[r]);
+				}
+				a[i] *= inv(a[i][i].v);
+				for (int j = 0; j <= n; j++) if (j != i) {
+					a[j] += a[i] * (M - a[j][i].v);
+				}
+			}
+		}
+	};
