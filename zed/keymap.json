@@ -4,5 +4,13 @@
     "bindings": {
       "alt-t": ["task::Rerun", { "reevaluate_context": true }]
     }
+  },
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
+      // ... other normal and visual mode keymaps
+      "L": "pane::ActivateNextItem",
+      "H": "pane::ActivatePrevItem"
+    }
   }
 ]

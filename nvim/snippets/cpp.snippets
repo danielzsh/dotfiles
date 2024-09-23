@@ -1,6 +1,8 @@
 snippet cpac
 	#include <cassert>
 	#include <iostream>
+	#include <vector>
+	#include <algorithm>
 	#define int long long
 	#define exit(X) { cout << (X); return; }
 	using namespace std;
@@ -226,3 +228,67 @@ snippet mint
 		}
 		mint operator/(mint o) { return *this * o.inv(); }
 	};
+
+snippet vec
+	struct V { mint u, v; mint& operator[](int i) { return i ? v : u; };
+		V operator*(V o) { return {u * o.u, v * o.v}; }
+		V operator*=(V o) { u *= o.u, v *= o.v; return *this; }
+	}
+
+snippet cht
+	struct Line {
+		mutable int k, m, p;
+		bool operator<(const Line& o) const { return k < o.k; }
+		bool operator<(int x) const { return p < x; }
+	};
+
+	struct LineContainer : multiset<Line, less<>> {
+		// (for doubles, use inf = 1/.0, div(a,b) = a/b)
+		int div(int a, int b) { // floored division
+			return a / b - ((a ^ b) < 0 && a % b); }
+		bool isect(iterator x, iterator y) {
+			if (y == end()) return x->p = inf, 0;
+			if (x->k == y->k) x->p = x->m > y->m ? inf : -inf;
+			else x->p = div(y->m - x->m, x->k - y->k);
+			return x->p >= y->p;
+		}
+		void add(int k, int m) {
+			auto z = insert({k, m, 0}), y = z++, x = y;
+			while (isect(y, z)) z = erase(z);
+			if (x != begin() && isect(--x, y)) isect(x, y = erase(y));
+			while ((y = x) != begin() && (--x)->p >= y->p)
+				isect(x, erase(y));
+		}
+		// gets maximum
+		int query(int x) {
+			assert(!empty());
+			auto l = *lower_bound(x);
+			return l.k * x + l.m;
+		}
+	};
+
+snippet sparse
+	struct ST {
+		bool mn;
+		int st[N + 1][K]{};
+		int f(int x, int y) {
+			if (x < y) return mn ? x : y;
+			else return mn ? y : x;
+		}
+		//---SPARSE TABLE---
+		void build(vector<int> &a, bool m) { // m -> whether to use min(true) or max(false)
+			mn = m;
+			int n = a.size();
+			for (int i = 0; i < n; i++) st[i][0] = a[i];
+			for (int k = 1; k < K; k++) for (int i = 0; i < n; i++) {
+				st[i][k] = st[i][k - 1];
+				if (int j = i + (1 << k - 1); j < n) st[i][k] = f(st[i][k], st[j][k - 1]);
+			}
+		}
+		int F(int l, int r) { // min on [l, r)
+		if (l == r) return mn ? inf : -inf;
+		int k = log2(r - l);
+		return f(st[l][k], st[r - (1 << k)][k]);
+		}
+	};
+
