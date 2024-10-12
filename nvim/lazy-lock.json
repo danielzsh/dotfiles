@@ -10,6 +10,8 @@
   "cmp-path": { "branch": "main", "commit": "91ff86cd9c29299a64f968ebb45846c485725f23" },
   "cmp_luasnip": { "branch": "master", "commit": "05a9ab28b53f71d1aece421ef32fee2cb857a843" },
   "conform.nvim": { "branch": "master", "commit": "393210360b9e807862e5329763526509f52b5218" },
+  "copilot-cmp": { "branch": "master", "commit": "b6e5286b3d74b04256d0a7e3bd2908eabec34b44" },
+  "copilot.lua": { "branch": "master", "commit": "1a237cf50372830a61d92b0adf00d3b23882e0e1" },
   "dashboard-nvim": { "branch": "master", "commit": "a0a78099658c7d4be3714f657b18ca8285d5d106" },
   "dressing.nvim": { "branch": "master", "commit": "5162edb1442a729a885c45455a07e9a89058be2f" },
   "flash.nvim": { "branch": "main", "commit": "7bb4a9c75d1e20cd24185afedeaa11681829ba23" },
